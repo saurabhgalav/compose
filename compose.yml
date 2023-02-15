@@ -1,0 +1,35 @@
+services:
+  wordpress:
+    image: docker.io/library/wordpress:latest
+    ports:
+      8080:80
+    restarts:
+      always
+    networks:
+      - test-nw
+    environment:
+      - WORDPRESS_DB_HOST=db
+      - WORDPRESS_DB_USER=wordpress
+      - WORDPRESS_DB_PASSWORD=password
+      - WORDPRESS_DB_DATABASE=wordpress
+  db:
+    image: docker.io/library/mariadb:10.6.4-focal
+    command: '--default-authentication-plugin=mysql_native_password'
+    volumes:
+      - db-vol:/var/lib/mysql
+    networks:
+      - test-nw
+    restarts:
+      always
+    environment:
+      - MYSQL_USER=wordpress
+      - MYSQL_PASSWORD=password
+      - MYSQL_ROOT_PASSWORD=r00tpa55@#
+      - MYSQL_DATABASE=wordpress
+    expose:
+      - 3306
+      - 33060
+volumes:
+  db-vol: {}
+networks:
+  test-nw: {}  
